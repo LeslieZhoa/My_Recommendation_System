@@ -32,17 +32,7 @@
       - embedding矩阵的第index行即为该单词的词向量，可根据词向量计算cosine距离来判定相似词语
 - ### 逻辑回归LR
   - 表示形式
-    ```math
-    A_0 = x
-    
-    Z_i=W_iA_{i-1}
-    
-    A_i=sigmoid(Z_i)
-    
-    y = A_n
-    
-    loss = cross\_entropy
-    ```
+    <div align=center><img src="http://latex.codecogs.com/gif.latex?%5C%5C%20A_0%20%3D%20x%20%5C%5C%20Z_i%3DW_iA_%7Bi-1%7D%20%5C%5C%20A_i%3Dsigmoid%28Z_i%29%20%5C%5C%20y%20%3D%20A_n%20%5C%5C%20loss%20%3D%20cross%5C_entropy"/></div>
   - 为什么激活函数使用sigmoid
     - LR假设函数概率服从伯努利分布，写成指数族分布形式可以数学推导出激活函数为sigmiod
     - 对于二分类问题，假设第i个特征对应第k类第贡献是<img src="http://latex.codecogs.com/gif.latex?w_%7Bki%7D"/>,则数据点<img src="http://latex.codecogs.com/gif.latex?%28x_1%2Cx_2%2C...%2Cx_n%29"/>属于第k类第概率正比与<img src="http://latex.codecogs.com/gif.latex?%5Cexp%28%7Bw_%7Bk1%7Dx_1&plus;...&plus;w_%7Bkn%7Dx_n%7D%29"/> <br>
@@ -84,15 +74,7 @@
           - 区别：梯度和梯度累加；不能离W或0太远
           - 综合两种距离，不能离W太远也不能离0太远,<img src="http://latex.codecogs.com/gif.latex?W%5E%7Bt&plus;1%7D%3Darg%5C%2C%20%5Cmin_%7BW%7D%20%5C%7B%20G%5E%7B1%3At%7DW&plus;%5Clambda_1%7C%7CW%7C%7C_1&plus;%5Clambda_2%20%7C%7CW%7C%7C_2%5E2&plus;%5Cfrac%7B1%7D%7B2%7D%5Csum_%7Bs%3D1%7D%5Et%5Csigma%5E%7Bs%7D%7C%7CW-W%5Es%7C%7C_2%5E2%5C%7D"/>
         - 算法步骤：
-        ```math
-        For \ each \  dimension \  i \ \ \ (q_i \ z_i \ init \ 0)
-        
-        \sigma_i = \frac{1}{\alpha}\sqrt{q_i+g_i^2}-\sqrt{q_i} \ \ \ q_i=q_i+g_i^2 \ \ \ \Leftarrow \frac{1}{\eta^t}-\frac{1}{\eta^{t-1}}
-        
-        z_i = z_i+g_i-\sigma_i w_i
-        
-        w_i \begin{cases}0 & if |z_i^t|\leq lambda_1 \\ -(lambda_2+\frac{\beta+\sqrt{q_i}}{\alpha})^{-1}(z_i-\lambda_1 sgn(z_i)) & otherwise \end{cases}
-        ```
+        <div align=center><img src="http://latex.codecogs.com/gif.latex?For%20%5C%20each%20%5C%20dimension%20%5C%20i%20%5C%20%5C%20%5C%20%28q_i%20%5C%20z_i%20%5C%20init%20%5C%200%29%20%5C%5C%20%5Csigma_i%20%3D%20%5Cfrac%7B1%7D%7B%5Calpha%7D%5Csqrt%7Bq_i&plus;g_i%5E2%7D-%5Csqrt%7Bq_i%7D%20%5C%20%5C%20%5C%20q_i%3Dq_i&plus;g_i%5E2%20%5C%20%5C%20%5C%20%5CLeftarrow%20%5Cfrac%7B1%7D%7B%5Ceta%5Et%7D-%5Cfrac%7B1%7D%7B%5Ceta%5E%7Bt-1%7D%7D%20%5C%5C%20z_i%20%3D%20z_i&plus;g_i-%5Csigma_i%20w_i%20%5C%5C%20w_i%20%5Cbegin%7Bcases%7D0%20%26%20if%20%7Cz_i%5Et%7C%5Cleq%20lambda_1%20%5C%5C%20-%28lambda_2&plus;%5Cfrac%7B%5Cbeta&plus;%5Csqrt%7Bq_i%7D%7D%7B%5Calpha%7D%29%5E%7B-1%7D%28z_i-%5Clambda_1%20sgn%28z_i%29%29%20%26%20otherwise%20%5Cend%7Bcases%7D"/></div>
 - ### 因式分解机FM<br>
 *多用于ctr问题*
   - FM
