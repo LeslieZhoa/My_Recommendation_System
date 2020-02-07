@@ -239,10 +239,10 @@ class Process:
         
         dataset = tf.data.Dataset.from_generator(self._sample_data, output_types=(tf.int64,tf.float32,tf.int32))
         dataset = dataset.map(self._parse_function,num_parallel_calls=8)
-        # dataset = dataset.shuffle(buffer_size=10000)
+        dataset = dataset.shuffle(buffer_size=10000)
         dataset = dataset.prefetch(self.opt.batch_size)
         dataset = dataset.repeat(self.opt.num_epochs)
-        dataset = dataset.batch(self.opt.batch_size)
+        dataset = dataset.batch(self.opt.batch_size,drop_remainder=True)
         iterator = dataset.make_one_shot_iterator()
         next_element = iterator.get_next()
         inputs = next_element[0]

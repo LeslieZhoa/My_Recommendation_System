@@ -99,7 +99,7 @@ class FM:
         train_writer = tf.summary.FileWriter(self.train_log,sess.graph)
 
         for e in range(self.opt.num_epochs):
-            for step in range(math.ceil(self.data_length/self.opt.batch_size)):
+            for step in range(math.floor(self.data_length/self.opt.batch_size)):
                 loss, accuracy, summary,global_steps, _ = sess.run([
                     self.loss, self.accuracy, merged, self.global_step, self.train_op
                 ])
