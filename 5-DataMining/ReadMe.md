@@ -24,22 +24,53 @@
     - 分层抽样
     - 系统抽样
     - 渐近抽样：通过掌握模型准确率随样本增大变化情况选取接近于稳定点对其他样本，可以估算出稳定点对接近程度，从而决定是否停止抽样
-  - 数据降维-->PCA<br>
-    将n维样本点转换成k维后，每维上样本方差都很大
-    - 步骤：
-      1. 特征标准化
-      2. 计算协方差矩阵
-      3. 计算协方差矩阵特征值和特征向量
-      4. 选取最大k个特征值对应特征向量，得到特征向量矩阵
-      5. 将数据与特征向量矩阵相乘变换到k维，得到新的数据集
-      6. 提取后数据信息占比<img src="http://latex.codecogs.com/gif.latex?%5Csqrt%7B%5Cfrac%7B%5Csum_%7Bi%3D1%7D%5Er%5Csigma_i%5E2%7D%7B%5Csum_%7Bi%3D1%7D%5Ek%5Csigma_i%5E2%7D%7D"/>其中<img src="http://latex.codecogs.com/gif.latex?%5Csigma_i%3D%5Csqrt%7B%5Clambda_i%7D"/>
-    - 优点：
-      - 仅需方差衡量信息量，不受数据集以外因素影响
-      - 各主成分之间正交，可消除原始数据成分之间相互影响
-      - 计算简单，主要运算是特征分解，易于实现
-    - 缺点：
-      - 主成分各特征含义模糊，不如原始数据可解释性强
-      - 方差小对非主成分可能含有对样本差异重要信息
+  - 数据降维
+    - PCA
+        将n维样本点转换成k维后，每维上样本方差都很大
+      - 步骤：
+        1. 特征标准化
+        2. 计算协方差矩阵
+        3. 计算协方差矩阵特征值和特征向量
+        4. 选取最大k个特征值对应特征向量，得到特征向量矩阵
+        5. 将数据与特征向量矩阵相乘变换到k维，得到新的数据集
+        6. 提取后数据信息占比<img src="http://latex.codecogs.com/gif.latex?%5Csqrt%7B%5Cfrac%7B%5Csum_%7Bi%3D1%7D%5Er%5Csigma_i%5E2%7D%7B%5Csum_%7Bi%3D1%7D%5Ek%5Csigma_i%5E2%7D%7D"/>其中<img src="http://latex.codecogs.com/gif.latex?%5Csigma_i%3D%5Csqrt%7B%5Clambda_i%7D"/>
+      - 优点：
+        - 仅需方差衡量信息量，不受数据集以外因素影响
+        - 各主成分之间正交，可消除原始数据成分之间相互影响
+        - 计算简单，主要运算是特征分解，易于实现
+      - 缺点：
+        - 主成分各特征含义模糊，不如原始数据可解释性强
+        - 方差小对非主成分可能含有对样本差异重要信息
+    - T-SNE:<br>
+        拟合低维数据，使其分布概率与真实数据分布KL散度最小
+      - 假设：
+        1. 高维数据点<img src="http://latex.codecogs.com/gif.latex?x_1%2Cx_2%2C...%2Cx_n%2Cp_%7Bi%7Cj%7D"/>默认<img src="http://latex.codecogs.com/gif.latex?p_%7Bi%7Ci%7D%3D0"/>
+        2. 低维数据点<img src="http://latex.codecogs.com/gif.latex?y_1%2Cy_2%2C...%2Cy_n"/>
+      - 方法：
+        1. SNE:
+          - 公式：<br>
+             <img src="http://latex.codecogs.com/gif.latex?p_%7Bj%7Ci%7D%3D%5Cfrac%7B%5Cexp%28-%7C%7Cx_i-x_j%7C%7C%5E2/2%5Csigma%20_i%5E2%29%7D%7B%5Csum_%7Bk%20%5Cne%20i%7D%20%5Cexp%28-%7C%7Cx_i-x_k%7C%7C%5E2/2%5Csigma%20_i%5E2%7D"/><br>
+             <img src="http://latex.codecogs.com/gif.latex?q_%7Bj%7Ci%7D%3D%5Cfrac%7B%5Cexp%28-%7C%7Cy_i-y_j%7C%7C%5E2%29%7D%7B%5Csum_%7Bk%20%5Cne%20i%7D%20%5Cexp%28-%7C%7Cy_i-y_k%7C%7C%5E2%7D"/><br>
+             <img src="http://latex.codecogs.com/gif.latex?C%3D%5Csum%20_i%20KL%28P_i%7C%7CQ_i%29%3D%5Csum_i%20%5Csum_j%20p_%7Bj%7Ci%7Dlog%20%5Cfrac%7Bp_%7Bj%7Ci%7D%7D%7Bq_%7Bj%7Ci%7D%7D"/><br>
+             <img src="http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20C%7D%7B%5Cpartial%20y_i%7D%3D2%5Csum_j%28p_%7Bj%7Ci%7D-q_%7Bj%7Ci%7D&plus;p_%7Bi%7Cj%7D-q_%7Bi%7Cj%7D%29%28y_i-y_j%29"/><br>
+          - 参数选择：
+            1. 用KL散度衡量不对称，如果高维度相邻而低维度分开(p大q小)，cost很大；如果高纬度数据分开而低维度数据相邻(p小q大)cost很小；SNE倾向于保留高维数据大局部结构
+            2. <img src="http://latex.codecogs.com/gif.latex?%5Csigma_i"/>取值<br>
+                困惑度<img src="http://latex.codecogs.com/gif.latex?Prep%28p_i%29%3D2%5E%7BH%28p_i%29%7D%20%5C%20%5C%20H%28p_i%29%3D-%5Csum_j%20p_%7Bj%7Ci%7D%20log_2%20p_j%7Ci"/>困惑度通常设置5到50之间<br>
+                熵大-->困惑度大-->分布相对平坦，每个元素概率更相近
+        2. 对称SNE
+          - 公式：<br>
+            <img src="http://latex.codecogs.com/gif.latex?p_%7Bij%7D%3D%5Cfrac%7Bp_%7Bi%7Cj%7D&plus;p_%7Bj%7Ci%7D%7D%7B2N%7D"/><br>
+             <img src="http://latex.codecogs.com/gif.latex?q_%7Bij%7D%3D%5Cfrac%7B%5Cexp%28-%7C%7Cy_i-y_j%7C%7C%5E2%29%7D%7B%5Csum_%7Bk%20%5Cne%20i%7D%20%5Cexp%28-%7C%7Cy_i-y_k%7C%7C%5E2%7D"/><br>
+             <img src="http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20C%7D%7B%5Cpartial%20y_i%7D%3D4%5Csum_j%28p_%7Bij%7D-q_%7Bij%7D%29%28y_i-y_j%29"/>
+          - 特点：保证<img src="http://latex.codecogs.com/gif.latex?p_%7Bji%7D"/>不会太小，每个点对代价函数都有贡献，梯度简单
+        3. t-sne
+          - 公式：<br>
+            <img src="http://latex.codecogs.com/gif.latex?q_%7Bij%7D%3D%5Cfrac%7B%281&plus;%7C%7Cy_i-y_j%7C%7C%5E2%29%5E%7B-1%7D%7D%7B%5Csum_%7Bk%20%5Cne%20l%7D%281&plus;%7C%7Cy_k-y_l%7C%7C%5E2%29%5E%7B-1%7D%7D"/><br>
+            <img src="http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20C%7D%7B%5Cpartial%20y_i%7D%3D4%5Csum_j%28p_%7Bij%7D-q_%7Bij%7D%29%28y_i-y_j%29%281&plus;%7C%7Cy_i-y_j%7C%7C%5E2%29%5E%7B-1%7D"/>
+          - 特点：将低维分布改为t分布，解决拥挤问题，强制保证低维空间<img src="http://latex.codecogs.com/gif.latex?q_%7Bij%7D%3Ep_%7Bij%7D"/>
+      - 优点：保持局部结构能力
+      - 缺点：复杂度高，具有随机性
   - 数据清理
     - 不合格数据修正
     - 缺失值填充
@@ -136,6 +167,7 @@
       2. 要知道先验概率
       3. 由先验和数据决定后验从而分类，分类决策存在一定错误率
       4. 对输入数据对表达形式敏感
+- 数据聚类：
   - KMeans算法：
     - 步骤：
       1. 在数据集中初始k个簇类中心，对应k个初始簇类
@@ -155,6 +187,44 @@
     - 优点：
       1. 加速kmeans速度，减少相似度计算次数
       2. 可克服kmeans收敛局部最优
+  - DBSCAN
+    - 基本概念：
+      1. 核心对象：r邻域内的点数量不小于minPts
+      2. <img src="http://latex.codecogs.com/gif.latex?%5Cxi"/>-邻域距离阈值：设定半径r
+      3. 直接密度可达：p在q的r邻域内，q是核心点，则p-q直接密度可达
+      4. 密度可达：q0,q1,...,qk,其中qi - qi-1直接密度可达，q0-qk密度可达
+      5. 边界点：属于某一类的非核心点
+      6. 噪声点：不属于任何一类簇的点
+    - 步骤：
+      ```md
+      * 标记所有对象为unvisted;
+      * DO
+      * 随机选择一个unvisited对象p
+      * 标记p为visited
+      * if p 为核心对象
+        * 创建一个新簇C,把p添加到C
+        * 令N为p的邻域中对象集合
+        * For N 中每个点p'
+            * If p' 是unvisited
+                * 标记 p' 为visited
+                * If p' 为核心对象，把其密度可达点添加到N
+                * 如果 p' 还不是任何簇族成员，把p'添加到C
+        * End for
+        * 输出C
+      * Until 标记为unvisited为噪声
+      ```
+    - 思路：某点与其密度可达为一类，继续啊探索
+    - 参数选择：
+      - 半径r:可以根据k距离设定，找到突变点
+      - k距离:给定数据集p={p(i),i=0,1,...,n},计算点p(i)到集合D到子集S中所有点之间点距离，距离按照从小到大顺序排序，d(k)就被称为k-距离
+      - minPts:k-距离中k值，一般取小一些，多次尝试
+    - 优点：
+      1. 不需指定簇个数
+      2. 可以发现任何形式簇
+      3. 擅长找离群点
+    - 缺点：
+      1. 高维数据困难
+      2. 参数难以选择
   - 聚类评估
     - 紧密性（Compactness,CP）：计算每一类各点到聚类中心平均距离<img src="http://latex.codecogs.com/gif.latex?%5Coverline%20%7BCP%7D%20%3D%5Cfrac%7B1%7D%7Bk%7D%20%5Csum_%7Bk%3D1%7D%5Ek%20%5Coverline%20%7BCP%7D_k%20%5C%20%5C%20%5C%20%5Coverline%20%7BCP%7D_k%3D%5Cfrac%7B1%7D%7BC_L%7D%5Csum_%7Bx_i%5Cin%20C%7D%7Cx_i-c_i%7C"/>
     - 间隔性（Separation,SP）:计算各聚类中心两两之间平均距离<img src="http://latex.codecogs.com/gif.latex?%5Coverline%20%7BSP%7D%3D%5Cfrac%7B2%7D%7Bk%5E2-k%7D%5Csum_%7Bi%3D1%7D%5Ek%5Csum_%7Bj%3Di&plus;1%7D%5Ek%7Cw_i-w_j%7C"/>
