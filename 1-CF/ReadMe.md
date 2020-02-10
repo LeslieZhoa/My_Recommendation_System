@@ -11,7 +11,7 @@
     1. 要求内容能容易抽成有意义特征
     2. 用户品味必须可用内容特征表示 
 - UserCF<br>
-    先找到相似用户，再找到他们喜欢物品
+  先找到相似用户，再找到他们喜欢物品
   - 步骤：
     1. 计算其他用户与目标用户的相似度sim.
         相似度计算方法有:(1)计算欧几里得距离;(2)计算皮尔逊相关系数;(3)计算cosine相似度
@@ -34,7 +34,7 @@
     1. 当物品数量远超用户使用
     2. 更注重热门物品推荐
 - ItemCF<br>
-    先找到用户喜欢物品，在找到喜欢物品对相似物品
+  先找到用户喜欢物品，在找到喜欢物品对相似物品
   - 步骤：
     1. 计算物品之间相似度<img src="http://latex.codecogs.com/gif.latex?W_%7Bij%7D%3D%5Cfrac%7B%7CN%28i%29%20%5Ccap%20N%28j%29%7C%7D%7B%7CN%28i%29%7C%7D"/>其中<img src="http://latex.codecogs.com/gif.latex?%7CN%28i%29%7C">表示喜欢物品i对用户数
     2. 惩罚热门商品<img src="http://latex.codecogs.com/gif.latex?W_%7Bij%7D%3D%5Cfrac%7B%7CN%28i%29%20%5Ccap%20N%28j%29%7C%7D%7B%5Csqrt%7B%7CN%28i%29%7C%7CN%28j%29%7C%7D%7D"/>
@@ -51,10 +51,10 @@
   - 初始数据评分少会导致难以精确计算top k
 - 基于隐语义模型的推荐算法LFM
   - 算法：<img src="http://latex.codecogs.com/gif.latex?R%28u%2Ci%29%3D%5Csum_%7Bk%3D1%7D%5Ek%20P_%7Bu%2Ck%7DQ_%7Bi%2Ck%7D"/><br>
-        <img src="http://latex.codecogs.com/gif.latex?P_%7Bu%2Ck%7D"/>:用户u兴趣和第k个隐类关系<br>
-        <img src="http://latex.codecogs.com/gif.latex?Q_%7Bi%2Ck%7D"/>:第k个隐类和物品i的关系<br>
-        k：隐类的数量<br>
-        R：用户对物品对兴趣度
+    <img src="http://latex.codecogs.com/gif.latex?P_%7Bu%2Ck%7D"/>:用户u兴趣和第k个隐类关系<br>
+    <img src="http://latex.codecogs.com/gif.latex?Q_%7Bi%2Ck%7D"/>:第k个隐类和物品i的关系<br>
+    k：隐类的数量<br>
+    R：用户对物品对兴趣度
   - 目的：自定义k值，通过大量数据，求出P，Q矩阵
   - 损失函数：<img src="http://latex.codecogs.com/gif.latex?loss%3D%5Csum_%7B%28u%2Ci%29%20%5Cin%20S%7D%28R_%7Bui%7D-%5Chat%20R_%7Bui%7D%29%5E2"/>
   - 优点：

@@ -19,100 +19,100 @@
       1. 对属性A对的所有取值从大到小排序
       2. 遍历属性A的每个值V,将属性A的值分成两个区间S1，S2,使其作为分隔点划分数据集后的熵S最小
       3. 当划分的熵大于设置阈值且小于指定数据分组个数时，递归对S1，S2执行步骤b中对划分
-  - 数据抽样
-    - 随机抽样
-    - 分层抽样
-    - 系统抽样
-    - 渐近抽样：通过掌握模型准确率随样本增大变化情况选取接近于稳定点对其他样本，可以估算出稳定点对接近程度，从而决定是否停止抽样
-  - 数据降维
-    - PCA
-        将n维样本点转换成k维后，每维上样本方差都很大
-      - 步骤：
-        1. 特征标准化
-        2. 计算协方差矩阵
-        3. 计算协方差矩阵特征值和特征向量
-        4. 选取最大k个特征值对应特征向量，得到特征向量矩阵
-        5. 将数据与特征向量矩阵相乘变换到k维，得到新的数据集
-        6. 提取后数据信息占比<img src="http://latex.codecogs.com/gif.latex?%5Csqrt%7B%5Cfrac%7B%5Csum_%7Bi%3D1%7D%5Er%5Csigma_i%5E2%7D%7B%5Csum_%7Bi%3D1%7D%5Ek%5Csigma_i%5E2%7D%7D"/>其中<img src="http://latex.codecogs.com/gif.latex?%5Csigma_i%3D%5Csqrt%7B%5Clambda_i%7D"/>
-      - 优点：
-        - 仅需方差衡量信息量，不受数据集以外因素影响
-        - 各主成分之间正交，可消除原始数据成分之间相互影响
-        - 计算简单，主要运算是特征分解，易于实现
-      - 缺点：
-        - 主成分各特征含义模糊，不如原始数据可解释性强
-        - 方差小对非主成分可能含有对样本差异重要信息
-    - T-SNE:<br>
-        拟合低维数据，使其分布概率与真实数据分布KL散度最小
-      - 假设：
-        1. 高维数据点<img src="http://latex.codecogs.com/gif.latex?x_1%2Cx_2%2C...%2Cx_n%2Cp_%7Bi%7Cj%7D"/>默认<img src="http://latex.codecogs.com/gif.latex?p_%7Bi%7Ci%7D%3D0"/>
-        2. 低维数据点<img src="http://latex.codecogs.com/gif.latex?y_1%2Cy_2%2C...%2Cy_n"/>
-      - 方法：
-        1. SNE:
-          - 公式：<br>
-             <img src="http://latex.codecogs.com/gif.latex?p_%7Bj%7Ci%7D%3D%5Cfrac%7B%5Cexp%28-%7C%7Cx_i-x_j%7C%7C%5E2/2%5Csigma%20_i%5E2%29%7D%7B%5Csum_%7Bk%20%5Cne%20i%7D%20%5Cexp%28-%7C%7Cx_i-x_k%7C%7C%5E2/2%5Csigma%20_i%5E2%7D"/><br>
-             <img src="http://latex.codecogs.com/gif.latex?q_%7Bj%7Ci%7D%3D%5Cfrac%7B%5Cexp%28-%7C%7Cy_i-y_j%7C%7C%5E2%29%7D%7B%5Csum_%7Bk%20%5Cne%20i%7D%20%5Cexp%28-%7C%7Cy_i-y_k%7C%7C%5E2%7D"/><br>
-             <img src="http://latex.codecogs.com/gif.latex?C%3D%5Csum%20_i%20KL%28P_i%7C%7CQ_i%29%3D%5Csum_i%20%5Csum_j%20p_%7Bj%7Ci%7Dlog%20%5Cfrac%7Bp_%7Bj%7Ci%7D%7D%7Bq_%7Bj%7Ci%7D%7D"/><br>
-             <img src="http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20C%7D%7B%5Cpartial%20y_i%7D%3D2%5Csum_j%28p_%7Bj%7Ci%7D-q_%7Bj%7Ci%7D&plus;p_%7Bi%7Cj%7D-q_%7Bi%7Cj%7D%29%28y_i-y_j%29"/><br>
-          - 参数选择：
-            1. 用KL散度衡量不对称，如果高维度相邻而低维度分开(p大q小)，cost很大；如果高纬度数据分开而低维度数据相邻(p小q大)cost很小；SNE倾向于保留高维数据大局部结构
-            2. <img src="http://latex.codecogs.com/gif.latex?%5Csigma_i"/>取值<br>
-                困惑度<img src="http://latex.codecogs.com/gif.latex?Prep%28p_i%29%3D2%5E%7BH%28p_i%29%7D%20%5C%20%5C%20H%28p_i%29%3D-%5Csum_j%20p_%7Bj%7Ci%7D%20log_2%20p_j%7Ci"/>困惑度通常设置5到50之间<br>
-                熵大-->困惑度大-->分布相对平坦，每个元素概率更相近
-        2. 对称SNE
-          - 公式：<br>
-            <img src="http://latex.codecogs.com/gif.latex?p_%7Bij%7D%3D%5Cfrac%7Bp_%7Bi%7Cj%7D&plus;p_%7Bj%7Ci%7D%7D%7B2N%7D"/><br>
-             <img src="http://latex.codecogs.com/gif.latex?q_%7Bij%7D%3D%5Cfrac%7B%5Cexp%28-%7C%7Cy_i-y_j%7C%7C%5E2%29%7D%7B%5Csum_%7Bk%20%5Cne%20i%7D%20%5Cexp%28-%7C%7Cy_i-y_k%7C%7C%5E2%7D"/><br>
-             <img src="http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20C%7D%7B%5Cpartial%20y_i%7D%3D4%5Csum_j%28p_%7Bij%7D-q_%7Bij%7D%29%28y_i-y_j%29"/>
-          - 特点：保证<img src="http://latex.codecogs.com/gif.latex?p_%7Bji%7D"/>不会太小，每个点对代价函数都有贡献，梯度简单
-        3. t-sne
-          - 公式：<br>
-            <img src="http://latex.codecogs.com/gif.latex?q_%7Bij%7D%3D%5Cfrac%7B%281&plus;%7C%7Cy_i-y_j%7C%7C%5E2%29%5E%7B-1%7D%7D%7B%5Csum_%7Bk%20%5Cne%20l%7D%281&plus;%7C%7Cy_k-y_l%7C%7C%5E2%29%5E%7B-1%7D%7D"/><br>
-            <img src="http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20C%7D%7B%5Cpartial%20y_i%7D%3D4%5Csum_j%28p_%7Bij%7D-q_%7Bij%7D%29%28y_i-y_j%29%281&plus;%7C%7Cy_i-y_j%7C%7C%5E2%29%5E%7B-1%7D"/>
-          - 特点：将低维分布改为t分布，解决拥挤问题，强制保证低维空间<img src="http://latex.codecogs.com/gif.latex?q_%7Bij%7D%3Ep_%7Bij%7D"/>
-      - 优点：保持局部结构能力
-      - 缺点：复杂度高，具有随机性
-  - 数据清理
-    - 不合格数据修正
-    - 缺失值填充
-      - 忽略数据
-      - 人工填写
-      - 使用全局固定值填充
-      - 使用属性中心度量进行填充
-      - 使用与给定元组属于同一类所有样本的属性均值或中心值填充
-      - 使用回归决策树等工具进行推理
-    - 噪声值处理
-    - 离群点处理
-      - 正太分布检测：计算数据集标准差和方差，根据不同置信区间来排除异常值
-      - Tukey's Test :<br>
-        基于四分位数计算出数据集中的最小估计值和最大估计值的异常值<br>
-        Q1-->下四分位数 Q2-->中位数 Q3-->上四分位数<br>
-        最小估计值为Q1-k(Q3-Q1)，最大估计值为Q3+k(Q3-Q1)<br>
-        当k=1.5时，小于最小估计值和大于最大估计值当中度异常，k=3时为重度异常
-    - 基于模型检测
-      - 基于聚类异常点检测
-      - 基于回归异常点检测
-      - 基于邻近度/距离/相似度异常点检测
-      - 基于密度异常点检测
-  - 相似度计算
-    - 闵可夫斯基距离：<img src="http://latex.codecogs.com/gif.latex?%5Csum_%7Bi%3D1%7D%5En%28%7Cx_i-y_i%7C%5Ep%29%5E%7B%5Cfrac%7B1%7D%7Bp%7D%7D"/>
-      - p=2为欧式距离只能走直线
-      - p=1为曼哈顿距离，只能沿划定格子边缘走
-      - p趋于无穷大<img src="http://latex.codecogs.com/gif.latex?max_%7Bi%3D1%7D%5En%7Cx_i-y_i%7C"/>结合欧式和曼哈顿<br>
+- 数据抽样
+  - 随机抽样
+  - 分层抽样
+  - 系统抽样
+  - 渐近抽样：通过掌握模型准确率随样本增大变化情况选取接近于稳定点对其他样本，可以估算出稳定点对接近程度，从而决定是否停止抽样
+- 数据降维
+  - PCA
+    将n维样本点转换成k维后，每维上样本方差都很大
+    - 步骤：
+      1. 特征标准化
+      2. 计算协方差矩阵
+      3. 计算协方差矩阵特征值和特征向量
+      4. 选取最大k个特征值对应特征向量，得到特征向量矩阵
+      5. 将数据与特征向量矩阵相乘变换到k维，得到新的数据集
+      6. 提取后数据信息占比<img src="http://latex.codecogs.com/gif.latex?%5Csqrt%7B%5Cfrac%7B%5Csum_%7Bi%3D1%7D%5Er%5Csigma_i%5E2%7D%7B%5Csum_%7Bi%3D1%7D%5Ek%5Csigma_i%5E2%7D%7D"/>其中<img src="http://latex.codecogs.com/gif.latex?%5Csigma_i%3D%5Csqrt%7B%5Clambda_i%7D"/>
+    - 优点：
+      - 仅需方差衡量信息量，不受数据集以外因素影响
+      - 各主成分之间正交，可消除原始数据成分之间相互影响
+      - 计算简单，主要运算是特征分解，易于实现
+    - 缺点：
+      - 主成分各特征含义模糊，不如原始数据可解释性强
+      - 方差小对非主成分可能含有对样本差异重要信息
+  - T-SNE:<br>
+    拟合低维数据，使其分布概率与真实数据分布KL散度最小
+    - 假设：
+      1. 高维数据点<img src="http://latex.codecogs.com/gif.latex?x_1%2Cx_2%2C...%2Cx_n%2Cp_%7Bi%7Cj%7D"/>默认<img src="http://latex.codecogs.com/gif.latex?p_%7Bi%7Ci%7D%3D0"/>
+      2. 低维数据点<img src="http://latex.codecogs.com/gif.latex?y_1%2Cy_2%2C...%2Cy_n"/>
+    - 方法：
+      1. SNE:
+        - 公式：<br>
+          <img src="http://latex.codecogs.com/gif.latex?p_%7Bj%7Ci%7D%3D%5Cfrac%7B%5Cexp%28-%7C%7Cx_i-x_j%7C%7C%5E2/2%5Csigma%20_i%5E2%29%7D%7B%5Csum_%7Bk%20%5Cne%20i%7D%20%5Cexp%28-%7C%7Cx_i-x_k%7C%7C%5E2/2%5Csigma%20_i%5E2%7D"/><br>
+          <img src="http://latex.codecogs.com/gif.latex?q_%7Bj%7Ci%7D%3D%5Cfrac%7B%5Cexp%28-%7C%7Cy_i-y_j%7C%7C%5E2%29%7D%7B%5Csum_%7Bk%20%5Cne%20i%7D%20%5Cexp%28-%7C%7Cy_i-y_k%7C%7C%5E2%7D"/><br>
+          <img src="http://latex.codecogs.com/gif.latex?C%3D%5Csum%20_i%20KL%28P_i%7C%7CQ_i%29%3D%5Csum_i%20%5Csum_j%20p_%7Bj%7Ci%7Dlog%20%5Cfrac%7Bp_%7Bj%7Ci%7D%7D%7Bq_%7Bj%7Ci%7D%7D"/><br>
+          <img src="http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20C%7D%7B%5Cpartial%20y_i%7D%3D2%5Csum_j%28p_%7Bj%7Ci%7D-q_%7Bj%7Ci%7D&plus;p_%7Bi%7Cj%7D-q_%7Bi%7Cj%7D%29%28y_i-y_j%29"/><br>
+        - 参数选择：
+          1. 用KL散度衡量不对称，如果高维度相邻而低维度分开(p大q小)，cost很大；如果高纬度数据分开而低维度数据相邻(p小q大)cost很小；SNE倾向于保留高维数据大局部结构
+          2. <img src="http://latex.codecogs.com/gif.latex?%5Csigma_i"/>取值<br>
+            困惑度<img src="http://latex.codecogs.com/gif.latex?Prep%28p_i%29%3D2%5E%7BH%28p_i%29%7D%20%5C%20%5C%20H%28p_i%29%3D-%5Csum_j%20p_%7Bj%7Ci%7D%20log_2%20p_j%7Ci"/>困惑度通常设置5到50之间<br>
+            熵大-->困惑度大-->分布相对平坦，每个元素概率更相近
+      2. 对称SNE
+        - 公式：<br>
+          <img src="http://latex.codecogs.com/gif.latex?p_%7Bij%7D%3D%5Cfrac%7Bp_%7Bi%7Cj%7D&plus;p_%7Bj%7Ci%7D%7D%7B2N%7D"/><br>
+            <img src="http://latex.codecogs.com/gif.latex?q_%7Bij%7D%3D%5Cfrac%7B%5Cexp%28-%7C%7Cy_i-y_j%7C%7C%5E2%29%7D%7B%5Csum_%7Bk%20%5Cne%20i%7D%20%5Cexp%28-%7C%7Cy_i-y_k%7C%7C%5E2%7D"/><br>
+            <img src="http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20C%7D%7B%5Cpartial%20y_i%7D%3D4%5Csum_j%28p_%7Bij%7D-q_%7Bij%7D%29%28y_i-y_j%29"/>
+        - 特点：保证<img src="http://latex.codecogs.com/gif.latex?p_%7Bji%7D"/>不会太小，每个点对代价函数都有贡献，梯度简单
+      3. t-sne
+        - 公式：<br>
+          <img src="http://latex.codecogs.com/gif.latex?q_%7Bij%7D%3D%5Cfrac%7B%281&plus;%7C%7Cy_i-y_j%7C%7C%5E2%29%5E%7B-1%7D%7D%7B%5Csum_%7Bk%20%5Cne%20l%7D%281&plus;%7C%7Cy_k-y_l%7C%7C%5E2%29%5E%7B-1%7D%7D"/><br>
+          <img src="http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20C%7D%7B%5Cpartial%20y_i%7D%3D4%5Csum_j%28p_%7Bij%7D-q_%7Bij%7D%29%28y_i-y_j%29%281&plus;%7C%7Cy_i-y_j%7C%7C%5E2%29%5E%7B-1%7D"/>
+        - 特点：将低维分布改为t分布，解决拥挤问题，强制保证低维空间<img src="http://latex.codecogs.com/gif.latex?q_%7Bij%7D%3Ep_%7Bij%7D"/>
+    - 优点：保持局部结构能力
+    - 缺点：复杂度高，具有随机性
+- 数据清理
+  - 不合格数据修正
+  - 缺失值填充
+    - 忽略数据
+    - 人工填写
+    - 使用全局固定值填充
+    - 使用属性中心度量进行填充
+    - 使用与给定元组属于同一类所有样本的属性均值或中心值填充
+    - 使用回归决策树等工具进行推理
+  - 噪声值处理
+  - 离群点处理
+    - 正太分布检测：计算数据集标准差和方差，根据不同置信区间来排除异常值
+    - Tukey's Test :<br>
+      基于四分位数计算出数据集中的最小估计值和最大估计值的异常值<br>
+      Q1-->下四分位数 Q2-->中位数 Q3-->上四分位数<br>
+      最小估计值为Q1-k(Q3-Q1)，最大估计值为Q3+k(Q3-Q1)<br>
+      当k=1.5时，小于最小估计值和大于最大估计值当中度异常，k=3时为重度异常
+  - 基于模型检测
+    - 基于聚类异常点检测
+    - 基于回归异常点检测
+    - 基于邻近度/距离/相似度异常点检测
+    - 基于密度异常点检测
+- 相似度计算
+  - 闵可夫斯基距离：<img src="http://latex.codecogs.com/gif.latex?%5Csum_%7Bi%3D1%7D%5En%28%7Cx_i-y_i%7C%5Ep%29%5E%7B%5Cfrac%7B1%7D%7Bp%7D%7D"/>
+    - p=2为欧式距离只能走直线
+    - p=1为曼哈顿距离，只能沿划定格子边缘走
+    - p趋于无穷大<img src="http://latex.codecogs.com/gif.latex?max_%7Bi%3D1%7D%5En%7Cx_i-y_i%7C"/>结合欧式和曼哈顿<br>
         缺点：受不同属性尺度不同影响，与数据之间分布无关具有局限性
-    - 马氏距离：
-      - 表示形式：有m各样本向量(x1,x2,...,xm)协方差矩阵为S，<img src="http://latex.codecogs.com/gif.latex?D%28x_i%2Cx_j%29%3D%5Csqrt%7B%28x_i-x_j%29%5ETS%5E-1%28x_i-x_j%29%7D"/>
-      - 物理意义：坐标旋转-->使旋转后各维度之间线性无关；数据压缩-->将不同维度上数据压缩成方差都是1当数据集；马氏距离是旋转变换缩放后当欧式距离
-      - 缺点：夸大变化微小变量当作用，受协方差矩阵不稳定影响，马氏距离并不一定总能顺序计算出
-    - 余弦相似度：
-      - 表示形式：<img src="http://latex.codecogs.com/gif.latex?cos%20sim%28x%2Cy%29%3D%5Cfrac%7B%5Csum%20x_iy_i%7D%7B%5Csqrt%7B%5Csum%20x_i%5E2%7D%5Csqrt%7B%5Csum%20y_i%5E2%7D%7D"/>
-      - 优点：与幅值无关，只与向量方向有关
-      - 缺点：受到向量平移影响
-    - 皮尔逊相关系数：
-      - 表达形式：<img src="http://latex.codecogs.com/gif.latex?%5Crho_%7BXY%7D%3D%5Cfrac%7BE%28%28X-EX%29%28Y-EY%29%29%7D%7B%5Csqrt%7BD%28X%29%7D%5Csqrt%7BD%28Y%29%7D%7D%20%5C%20%5C%20%5C%20D_%7BXY%7D%3D1-%5Crho_%7BXY%7D"/>
-      - 优点：具有平移不变性和尺度不变性，计算出两个向量（维度）相关性
-      - 缺点：假设数据服从正太分布
-    - 汉名距离：两个等长字符串s1,s2之间，将一个变为另一个所需最小替换次数
-    - 杰卡得相似系数：<img src="http://latex.codecogs.com/gif.latex?J%3D%5Cfrac%7BM_%7B11%7D%7D%7BM_%7B01%7D&plus;M_%7B10%7D&plus;M_%7B11%7D%7D"/>，比汉名距离多了权重
+  - 马氏距离：
+    - 表示形式：有m各样本向量(x1,x2,...,xm)协方差矩阵为S，<img src="http://latex.codecogs.com/gif.latex?D%28x_i%2Cx_j%29%3D%5Csqrt%7B%28x_i-x_j%29%5ETS%5E-1%28x_i-x_j%29%7D"/>
+    - 物理意义：坐标旋转-->使旋转后各维度之间线性无关；数据压缩-->将不同维度上数据压缩成方差都是1当数据集；马氏距离是旋转变换缩放后当欧式距离
+    - 缺点：夸大变化微小变量当作用，受协方差矩阵不稳定影响，马氏距离并不一定总能顺序计算出
+  - 余弦相似度：
+    - 表示形式：<img src="http://latex.codecogs.com/gif.latex?cos%20sim%28x%2Cy%29%3D%5Cfrac%7B%5Csum%20x_iy_i%7D%7B%5Csqrt%7B%5Csum%20x_i%5E2%7D%5Csqrt%7B%5Csum%20y_i%5E2%7D%7D"/>
+    - 优点：与幅值无关，只与向量方向有关
+    - 缺点：受到向量平移影响
+  - 皮尔逊相关系数：
+    - 表达形式：<img src="http://latex.codecogs.com/gif.latex?%5Crho_%7BXY%7D%3D%5Cfrac%7BE%28%28X-EX%29%28Y-EY%29%29%7D%7B%5Csqrt%7BD%28X%29%7D%5Csqrt%7BD%28Y%29%7D%7D%20%5C%20%5C%20%5C%20D_%7BXY%7D%3D1-%5Crho_%7BXY%7D"/>
+    - 优点：具有平移不变性和尺度不变性，计算出两个向量（维度）相关性
+    - 缺点：假设数据服从正太分布
+  - 汉名距离：两个等长字符串s1,s2之间，将一个变为另一个所需最小替换次数
+  - 杰卡得相似系数：<img src="http://latex.codecogs.com/gif.latex?J%3D%5Cfrac%7BM_%7B11%7D%7D%7BM_%7B01%7D&plus;M_%7B10%7D&plus;M_%7B11%7D%7D"/>，比汉名距离多了权重
 - 数据分类：
   - KNN算法分类
     - 算法流程
@@ -232,14 +232,11 @@
     - 邓恩指数（Dunn Validity Index,DVI）:计算任意两个簇族元素最短距离(类间)除以任意簇类中最大距离(类内)，<img src="http://latex.codecogs.com/gif.latex?DVI%3D%5Cfrac%7B%5Cmin_%7B0%20%3C%20m%20%5Cneq%20n%20%3C%20k%7D%5C%7B%5Cmin_%7B%5Cforall%20x_i%20%5Cin%20C_m%2C%5Cforall%20x_j%20%5Cin%20C_n%7D%7Cx_i-x_j%7C%5C%7D%7D%7B%5Cmax_%7B0%20%3C%20m%20%5Cle%20k%7D%5Cmax_%7B%5Cforall%20x_i%2Cx_j%20%5Cin%20C_m%7D%7Cx_i-x_j%7C%7D"/>其中<img src="http://latex.codecogs.com/gif.latex?%7Cx_i-x_j%7C"/>表示任意两簇中元素之间距离
     - 准确性（Cluster accuracy,CA）:计算正确聚类数据数目占总数据数目比例，<img src="http://latex.codecogs.com/gif.latex?CA%3D%5Cfrac%7B1%7D%7BN%7D%5Csum_%7Bi%3D1%7D%5Ek%20C_i"/>
 - 关联分析--Apriori算法<br>
-    找出物品之间关联度
+  找出物品之间关联度
   - 定义：
     - 项集支持度：一个项集出现次数与数据集所有事物数百分比，<img src="http://latex.codecogs.com/gif.latex?support%28A-%3EB%29%3D%5Cfrac%7BsupportCount%28A%20%5Ccup%20B%29%7D%7BN%7D"/>
     - 项集置信度：数据集中同时包含A，B数目占A比例，<img src="http://latex.codecogs.com/gif.latex?confidence%28A-%3EB%29%3D%5Cfrac%7BsupportCount%28A%20%5Ccup%20B%29%7D%7BsupportCount%28A%29%7D"/>
   - 步骤：
     1. 通过扫描数据库，累计每个项计数，收集满足最小支持度的项<img src="http://latex.codecogs.com/gif.latex?support%28A-%3EB%29%20%3D%20%5Cfrac%7BsupportCount%28A%29%7D%7BN%7D%20%3E%20%5Calpha"/>，找出单物品集合，记L1
     2. 使用L1找出共同出现2个物品项集集合L2，L2找L3...
-    3. 如此下去直到不能再找到可共同出现物品项集，每找出一个Lk需一次完整数据库扫描    
-        
-      
-
+    3. 如此下去直到不能再找到可共同出现物品项集，每找出一个Lk需一次完整数据库扫描   

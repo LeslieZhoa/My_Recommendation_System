@@ -23,5 +23,4 @@
     将权重V&#8194;reshape成[-1,f*k]（依然如ffm引入了隐式特征）并接入DNN中<img src="http://latex.codecogs.com/gif.latex?y_%7Bdnn%7D%3DDNN%28V_%7Breshape%7D%29"/><br>
     &#8194;&#8194;&#8194;&#8194;&#8194;<img src="http://latex.codecogs.com/gif.latex?y_%7Bout%7D%3Dy_%7Bfm%7D&plus;y_%7Bdnn%7D"/>
     
-  - 特点：从原始数据中同时学习到了低维与高维特征；
-不再需要特征工程
+  - 特点：从原始数据中同时学习到了低维与高维特征；不再需要特征工程
