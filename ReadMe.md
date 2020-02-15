@@ -605,7 +605,7 @@ KKT:：<img src="http://latex.codecogs.com/gif.latex?%5Cleft%20%5C%7B%20%5Cbegin
   * 把所有树的叶节点当作one-hot特征，对应计算数据的gbdt特征
   * gbdt特征与原始数据特征一起加入LR训练
   ```
-  ### 推荐系统中冷启动
+### 推荐系统中冷启动
 - 冷启动类别
   1. 用户冷启动：新用户，无历史数据
   2. 物品冷启动：物品新加入系统，无被动行为
@@ -723,12 +723,12 @@ PV点击率：侧重页面对合适用户群黏性-->用户点击数
 越小说明系统趋向于把用户喜欢商品排在前面
 - 非准确率指标：
   1. 多样性：
-    - 用户间多样性：衡量不同用户推荐不同商品大能力<br>
+     - 用户间多样性：衡量不同用户推荐不同商品大能力<br>
     <img src="http://latex.codecogs.com/gif.latex?H_%7But%7D%3D1-%5Cfrac%7Bl_%7But%7D%7D%7BL%7D"/><br>
 <img src="http://latex.codecogs.com/gif.latex?l_%7But%7D"/>-->用户u和用户t推荐相同商品个数<br>
 L-->用户u或用户t推荐商品个数<br>
 结果越大多样性越好
-    - 用户内多样性：对一个用户推荐商品多样性<br>
+     - 用户内多样性：对一个用户推荐商品多样性<br>
     <img src="http://latex.codecogs.com/gif.latex?I_u%3D%5Cfrac%7B1%7D%7BL%28L-1%29%7D%5Csum_%7Bi%3D1%7D%5EL%5Csum_%7Bj%3D1%7D%5ELSim_%7Bi%20%5Cneq%20j%7D%28I_i%2CI_j%29"/><br>
 <img src="http://latex.codecogs.com/gif.latex?Sim_%7Bi%20%5Cneq%20j%7D%28I_i%2CI_j%29"/>-->Ii,Ij相似度<br>
 L-->推荐商品长度<br>
