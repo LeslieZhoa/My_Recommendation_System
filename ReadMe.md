@@ -605,6 +605,166 @@ KKT:：<img src="http://latex.codecogs.com/gif.latex?%5Cleft%20%5C%7B%20%5Cbegin
   * 把所有树的叶节点当作one-hot特征，对应计算数据的gbdt特征
   * gbdt特征与原始数据特征一起加入LR训练
   ```
+  ### 推荐系统中冷启动
+- 冷启动类别
+  1. 用户冷启动：新用户，无历史数据
+  2. 物品冷启动：物品新加入系统，无被动行为
+  3. 系统冷启动：一个新系统，没有用户行为，只有物品
+- 基于热门数据推荐实现冷启动：<br>
+推荐一定规则排序排名靠前物品，可在某种程度上是用户群体大部分人短期兴趣点
+- 利用用户注册信息实现冷启动
+  - 用户信息分类：
+    1. 人口统计学信息
+    2. 用户兴趣描述
+    3. 其他网站导入数据
+  - 步骤：
+    1. 获取用户注册信息
+    2. 根据用户信息对用户进行分类，可能多分类
+    3. 给用户推荐其所在分类用户最喜欢物品，对不同类别物品加权求和
+- 利用用户上下文信息实现冷启动：<br>
+  1. 针对用户上下文信息，根据用户历史数据分析出用户在相应属性下的行为偏好，为相应商品打上对应时间和地域信息
+  2. 在新用户来访时，系统通过获取时间和地域信息召回对应属性下数据
+  3. 按照一定规则排序得到top k
+- 利用第三方数据冷启动：<br>
+获取第三方相关信息，包括用户本身属性和朋友信息，采用协同过滤
+- 利用用户系统之间交互实现冷启动
+  1. 初始化选择标签
+  2. 通过召回商品，调整召回权重
+- 利用物品内容属性冷启动：
+  - 步骤：
+    1. 根据物品内容属性，将其加入相应召回类型中，再将物品加入召回池
+    2. 将内容属性构造为特征，根据特征计算物品相似度
+  - 物品内容属性：
+    1. 物品本身属性
+    2. 物品归纳属性
+    3. 物品被动属性
+- 利用专家标注数据
+### 推荐系统中效果评估
+- 用户调研：
+  - 优点：可以获得更多体现用户主观感受指标，比在线实验风险低，出现错误后容易弥补
+  - 缺点：招募测试用户代价大，很难组织大规模测试用户，因此测试结果统计意义不大
+- ABTest
+  - 流程：
+    1. 用户分流
+    2. 分桶召回：对不同桶指定不同召回策略，使得到召回商品池存在差异
+    3. 用户打散，重新分桶（确保不同桶之间用户没有相关关系）
+    4. 分桶排序：对不同桶指定不同算法排序
+    5. 商品展示
+  - 注意问题：
+    1. 证实偏差：忽略否定命题证据。要注意外界因素对系统影响，适当拉长测试周期
+    2. 幸存偏差：也要管制没有来访用户行为特征和偏好，确保推荐系统泛化
+    3. 辛普森悖论：不要更改变量，在测试过程中
+    4. 均值回归，适当增加测试时长
+- 在线评估指标
+  - 点击率：商品点击次数与曝光次数的比值<br>
+  <img src="http://latex.codecogs.com/gif.latex?Crt%3D%5Cfrac%7BN_%7Bclick%7D%7D%7BN_%7Bexpose%7D%7D"/><br>
+UV点击率：侧重反映页面对整个用户群黏性-->点击用户数<br>
+PV点击率：侧重页面对合适用户群黏性-->用户点击数
+  - 转化率：事物从状态A到状态B大概率<br>
+  <img src="http://latex.codecogs.com/gif.latex?Cr_%7BaddCart%7D%3D%5Cfrac%7BN_%7BaddCart%7D%7D%7BN_%7Bclick%7D%7D"/><br>
+<img src="http://latex.codecogs.com/gif.latex?N_%7Bclick%7D"/>：商品点击数<br>
+<img src="http://latex.codecogs.com/gif.latex?N_%7BaddCart%7D"/>：商品加购数
+  - 网站成交额：可研究用户购买意向<br>
+  GMV=销售额+取消订单额+拒收订单金额+退货订单金额
+- 拆分数据集
+  1. 留出发：随机划分
+  2. k-折交叉验证：<br>
+     - 步骤：
+       1. 数据分为k组，k-1组训练，1组验证
+       2. 获取k组模型平均值
+     - 优点：偏差低，性能评估变化小
+  3. 自助法：
+     - 步骤：
+       1. 从D中有放回选取一个样本到D'
+       2. 重复m次，D'-->训练集，D ^ D' -->测试集
+     - 优点：性能评估变化小；对于数据集小，难以划分数据集很有用；对集成学习等方法有好处
+- 离线评估指标：<br>
+混淆矩阵：<br>
+<center>
+<table>
+   <tr>
+        <td rowspan="2" colspan="2"> </td>
+        <td colspan="2">预测值</td>
+    </tr>
+    <tr>
+        <td>0</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td rowspan="2">
+        真<br/>
+        实<br/>
+        值<br/></td>
+        <td>0</td>
+        <td>TN</td>
+        <td>FP</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>FN</td>
+        <td>TP</td>
+    </tr>
+</table>
+</center>
+
+  - ROC曲线：<br>
+  横坐标：错误样本中被预测为正确大概率<br>
+纵坐标：正确样本中被预测正确大概率<br>
+根据阈值变化生成曲线
+  - AUC：为ROC曲线下边面积，面积越大，效果越好
+  - 准确率指标：
+    1. 平均绝对误差：<img src="http://latex.codecogs.com/gif.latex?MAE%3D%5Cfrac%7B1%7D%7Bm%7D%5Csum_%7Bi%3D1%7D%5Em%7Cy_i-y_i%27%7C"/>
+    2. 均方误差：<img src="http://latex.codecogs.com/gif.latex?MSE%3D%5Cfrac%7B1%7D%7Bm%7D%5Csum_%7Bi%3D1%7D%5Em%28y_i-y_i%27%29%5E2"/>
+    3. 均方根误差：<img src="http://latex.codecogs.com/gif.latex?RMSE%3D%5Csqrt%7BMSE%7D"/>
+  - 排序准确度指标：<br>
+  平均排序分：<img src="http://latex.codecogs.com/gif.latex?RS_%7Bua%7D%3D%5Cfrac%7Bl_%7Bua%7D%7D%7BL_u%7D"/><br>
+<img src="http://latex.codecogs.com/gif.latex?L_u"/>-->用户u待排序商品个数<br>
+<img src="http://latex.codecogs.com/gif.latex?l_%7Bua%7D"/>-->待预测商品a在用户u推荐列表排名<br>
+越小说明系统趋向于把用户喜欢商品排在前面
+- 非准确率指标：
+  1. 多样性：
+    - 用户间多样性：衡量不同用户推荐不同商品大能力<br>
+    <img src="http://latex.codecogs.com/gif.latex?H_%7But%7D%3D1-%5Cfrac%7Bl_%7But%7D%7D%7BL%7D"/><br>
+<img src="http://latex.codecogs.com/gif.latex?l_%7But%7D"/>-->用户u和用户t推荐相同商品个数<br>
+L-->用户u或用户t推荐商品个数<br>
+结果越大多样性越好
+    - 用户内多样性：对一个用户推荐商品多样性<br>
+    <img src="http://latex.codecogs.com/gif.latex?I_u%3D%5Cfrac%7B1%7D%7BL%28L-1%29%7D%5Csum_%7Bi%3D1%7D%5EL%5Csum_%7Bj%3D1%7D%5ELSim_%7Bi%20%5Cneq%20j%7D%28I_i%2CI_j%29"/><br>
+<img src="http://latex.codecogs.com/gif.latex?Sim_%7Bi%20%5Cneq%20j%7D%28I_i%2CI_j%29"/>-->Ii,Ij相似度<br>
+L-->推荐商品长度<br>
+结果越小，多样性越大
+  2. 新颖性-->冷门推荐<br>
+     - 用户u推荐结果新颖性<br>
+    <img src="http://latex.codecogs.com/gif.latex?Novelty%28L_u%29%3D%5Cfrac%7B%5Csum_%7Bi%20%5Cin%20L_u%7Dp%28i%29%7D%7B%7CL_u%7C%7D"/><br>
+p(i)-->商品流行度<br>
+|Lu|-->用户u推荐结果个数
+     - 整个系统新颖性<br>
+    <img src="http://latex.codecogs.com/gif.latex?Novelty%3D%5Cfrac%7B1%7D%7Bm%7D%5Csum_%7Bu%20%5Cin%20U%7DNovelty%28L_u%29"/><br>
+m-->推荐用户个数<br>
+u-->所有用户
+  3. 惊喜度
+  4. 覆盖率：
+     - 预测覆盖率-->预测评分商品占所有商品比例<br>
+    <img src="http://latex.codecogs.com/gif.latex?Cov_p%3D%5Cfrac%7BN_d%7D%7BN%7D"/><br>
+Nd-->可预测评分商品数目<br>
+N-->所有商品数量
+     - 推荐覆盖率-->为用户推荐商品占所有商品比例<br>
+    <img src="http://latex.codecogs.com/gif.latex?Cov_r%28L%29%3D%5Cfrac%7BN_d%28L%29%7D%7BN%7D"/><br>
+<img src="http://latex.codecogs.com/gif.latex?N_d%28L%29"/>-->用户推荐列表中出现不同商品数
+     - 类别覆盖率<br>
+    <img src="http://latex.codecogs.com/gif.latex?Cov_c%3D%5Cfrac%7BN_c%27%7D%7BN_c%7D"/><br>
+Nc'-->推荐结果中商品对应类别c个数<br>
+Nc-->所有商品类别数
+  5. 信任度-->增强交互<br>
+  增加推荐系统透明度<br>
+考虑用户社交网络信息
+  6. 实时性<br>
+  推荐系统实时更新推荐列表满足用户新行为变化<br>
+能将新加入系统商品推荐给用户
+  7. 健壮性-->加入噪声对比前后推荐列表相似度<br>
+  设计推荐系统时，尽量使用代价最高用户行为<br>
+异常值处理
+  8. 商业目标
 
         
       
