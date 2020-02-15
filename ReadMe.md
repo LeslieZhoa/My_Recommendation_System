@@ -680,8 +680,7 @@ PV点击率：侧重页面对合适用户群黏性-->用户点击数
      - 优点：性能评估变化小；对于数据集小，难以划分数据集很有用；对集成学习等方法有好处
 - 离线评估指标：<br>
 混淆矩阵：<br>
-
-<div align=center><table>
+<table align=center>
    <tr>
         <td rowspan="2" colspan="2"> </td>
         <td colspan="2">预测值</td>
@@ -704,8 +703,7 @@ PV点击率：侧重页面对合适用户群黏性-->用户点击数
         <td>FN</td>
         <td>TP</td>
     </tr>
-</table></div>
-
+</table>
 
   - ROC曲线：<br>
   横坐标：错误样本中被预测为正确大概率<br>
