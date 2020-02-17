@@ -40,7 +40,7 @@
   - 步骤：
     1. 计算物品之间相似度<img src="http://latex.codecogs.com/gif.latex?W_%7Bij%7D%3D%5Cfrac%7B%7CN%28i%29%20%5Ccap%20N%28j%29%7C%7D%7B%7CN%28i%29%7C%7D"/>其中<img src="http://latex.codecogs.com/gif.latex?%7CN%28i%29%7C">表示喜欢物品i对用户数
     2. 惩罚热门商品<img src="http://latex.codecogs.com/gif.latex?W_%7Bij%7D%3D%5Cfrac%7B%7CN%28i%29%20%5Ccap%20N%28j%29%7C%7D%7B%5Csqrt%7B%7CN%28i%29%7C%7CN%28j%29%7C%7D%7D"/>
-    3. 计算推荐结果<img src="http://latex.codecogs.com/gif.latex?p%28u%2Ci%29%3D%5Csum_%7Bv%20%5Cin%20S%28i%2Ck%29%20%5Ccap%20N%28u%29%7D%20W_%7Bij%7Dr_%7Bui%7D%24"/><br>
+    3. 计算推荐结果<img src="http://latex.codecogs.com/gif.latex?p%28u%2Ci%29%3D%5Csum_%7Bj%20%5Cin%20S%28i%2Ck%29%20%5Ccap%20N%28u%29%7D%20W_%7Bij%7Dr_%7Buj%7D"/><br>
     <img src="http://latex.codecogs.com/gif.latex?p%28u%2Ci%29"/>表示用户u对物品i对感兴趣程度;<br>
     <img src="http://latex.codecogs.com/gif.latex?S%28i%2Ck%29"/>表示和物品i最相似的k个物品;<br>
     <img src="http://latex.codecogs.com/gif.latex?W_%7Bij%7D"/>表示物品i和物品j相似度<br>
@@ -88,7 +88,7 @@
 - 表示形式
     <div align=center><img src="http://latex.codecogs.com/gif.latex?%5C%5C%20A_0%20%3D%20x%20%5C%5C%20Z_i%3DW_iA_%7Bi-1%7D%20%5C%5C%20A_i%3Dsigmoid%28Z_i%29%20%5C%5C%20y%20%3D%20A_n%20%5C%5C%20loss%20%3D%20cross%5C_entropy"/></div>
 - 为什么激活函数使用sigmoid
-  - LR假设函数概率服从伯努利分布，写成指数族分布形式可以数学推导出激活函数为sigmiod
+  - LR假设函数概率服从伯努利分布，写成指数族分布形式可以数学推导出激活函数为sigmoid
   - 对于二分类问题，假设第i个特征对应第k类第贡献是<img src="http://latex.codecogs.com/gif.latex?w_%7Bki%7D"/>,则数据点<img src="http://latex.codecogs.com/gif.latex?%28x_1%2Cx_2%2C...%2Cx_n%29"/>属于第k类第概率正比与<img src="http://latex.codecogs.com/gif.latex?%5Cexp%28%7Bw_%7Bk1%7Dx_1&plus;...&plus;w_%7Bkn%7Dx_n%7D%29"/> <br>
     因为一个数据点属于各类第概率之和为1，所以
     <img src="http://latex.codecogs.com/gif.latex?p%28y%3D1%29%3D%5Cfrac%7B%5Cexp%28%5Csum_%7Bi%3D1%7D%5Enw_%7B1i%7Dx_i%29%7D%7B%5Cexp%28%5Csum_%7Bi%3D1%7D%5Enw_%7B1i%7Dx_i%29&plus;%5Cexp%28%5Csum_%7Bi%3D1%7D%5Enw_%7B0i%7Dx_i%29%7D"/>
@@ -109,16 +109,16 @@
     &#8194; &#8194; &#8194; &#8194; &#8194; &#8194; <img src="http://latex.codecogs.com/gif.latex?T_0%28v_i%2C%5Ctheta%29%5Cbegin%7Bcases%7D0%20%26%20if%20%7Cv_i%7C%5Cleq%5Ctheta%20%5C%5Cv_i%20%26%20otherwise%20%5Cend%7Bcases%7D"/>
   - 阶段梯度法TG
     - 表示方法：<img src="http://latex.codecogs.com/gif.latex?w%5E%7Bt&plus;1%7D%3DT_1%28w%5Et-%5Ceta%5EtG%5Et%2C%5Ceta%5Et%5Clambda%5Et%2C%5Ctheta%29"/><br>
-    &#8194; &#8194; &#8194; &#8194; &#8194;&#8194; <img src="http://latex.codecogs.com/gif.latex?T_1%28v_i%2C%5Calpha%2C%5Ctheta%29%5Cbegin%7Bcases%7Dmax%280%2Cv_i-%5Calpha%20%26%20if%20v_i%5Cin%20%5B0%2C%5Ctheta%5D%20%5C%5Cmin%280%2Cv_i&plus;%5Calpha%20%26%20if%20v_i%5Cin%20%5B-%5Ctheta%2C0%5D%5C%5C%20v_i%20%26%20otherwise%20%5Cend%7Bcases%7D"/>
+    &#8194; &#8194; &#8194; &#8194; &#8194;&#8194; <img src="http://latex.codecogs.com/gif.latex?T_1%28v_i%2C%5Calpha%2C%5Ctheta%29%5Cbegin%7Bcases%7Dmax%280%2Cv_i-%5Calpha%29%20%26%20if%20v_i%5Cin%20%5B0%2C%5Ctheta%5D%20%5C%5Cmin%280%2Cv_i&plus;%5Calpha%29%20%26%20if%20v_i%5Cin%20%5B-%5Ctheta%2C0%5D%5C%5C%20v_i%20%26%20otherwise%20%5Cend%7Bcases%7D"/>
     - 与T0差别：相较于T0的一个参数，多了一个参数进行截断，过度相对平缓
   - 前向后向切分FOBOS
     - 表示方法：L1-FOBOS举例<img src="http://latex.codecogs.com/gif.latex?w_i%5E%7Bt&plus;1%7D%5Cbegin%7Bcases%7D0%20%26%20if%20%7Cw_i%5Et-%5Ceta%5Etg_i%5Et%7C%20%5Cleq%20%5Ceta%5E%7Bt&plus;%5Cfrac%7B1%7D%7B2%7D%7D%20%5Clambda%20%5C%5C%20%28w_i%5Et-%5Ceta%5Et%20g_i%5Et-%5Ceta%5E%7Bt&plus;%5Cfrac%7B1%7D%7B2%7D%7D%5Clambda%20sgn%28w_i%5Et-%5Ceta%5Etg_i%5Et%29%20%26%20otherwise%20%5Cend%7Bcases%7D"/> 
-    - 特点：相较于T0,T1和某值进行比较截断，该方法稀疏条件--><img src="http://latex.codecogs.com/gif.latex?%7Cw_i%5Et-%5Ceta%5Etg_i%5Et%7C%20%5Cleq%20%5Ceta%5E%7Bt&plus;%5Cfrac%7B1%7D%7B2%7D%7D%20%5Clambda"/>，当一条样本梯度不足以令维度上当权重值发生足够大变化<img src="http://latex.codecogs.com/gif.latex?%5Ceta%5E%7Bt&plus;%5Cfrac%7B1%7D%7B2%7D%7D%20%5Clambda"/>，则在本次更新不重要，令权重·为0
+    - 特点：相较于T0,T1和某值进行比较截断，该方法稀疏条件--><img src="http://latex.codecogs.com/gif.latex?%7Cw_i%5Et-%5Ceta%5Etg_i%5Et%7C%20%5Cleq%20%5Ceta%5E%7Bt&plus;%5Cfrac%7B1%7D%7B2%7D%7D%20%5Clambda"/>，当一条样本梯度不足以令维度上的权重值发生足够大变化<img src="http://latex.codecogs.com/gif.latex?%5Ceta%5E%7Bt&plus;%5Cfrac%7B1%7D%7B2%7D%7D%20%5Clambda"/>，则在本次更新不重要，令权重为0
 - 累计梯度方法
   - 正则对偶平均RDA
     - 表示方式：L1-RDA举例<img src="http://latex.codecogs.com/gif.latex?w_i%5E%7Bt&plus;1%7D%5Cbegin%7Bcases%7D0%20%26%20if%20%7C%5Cbar%7Bg%7D_i%5Et%7C%5Cleq%20%5Clambda%20%5C%5C%20-%5Cfrac%7Bt%7D%7B%5Cgamma%7D%28%5Cbar%7Bg%7D_i%5Et%20-%20%5Clambda%20sgn%28%5Cbar%7Bg%7D_i%5Et%29%29%20%26%20otherwise%20%5Cend%7Bcases%7D"/>
     - 特点：
-      - L1-FOBOS截断条件<img src="http://latex.codecogs.com/gif.latex?%7Cw_i%5Et-%5Ceta%5Etg%5Et_i%7C%5Cleq%20%5Ceta%5E%7Bt&plus;%5Cfrac%7B1%7D%7B2%7D%7D%5Clambda"/>其中<img src="http://latex.codecogs.com/gif.latex?%5Ceta"/>正比于<img src="http://latex.codecogs.com/gif.latex?%5Cfrac%7B1%7D%7B%5Csqrt%7Bt%7D%7D"/>，所以随着t增加，阈值绘减小，是基于梯度下降有较高精度；
+      - L1-FOBOS截断条件<img src="http://latex.codecogs.com/gif.latex?%7Cw_i%5Et-%5Ceta%5Etg%5Et_i%7C%5Cleq%20%5Ceta%5E%7Bt&plus;%5Cfrac%7B1%7D%7B2%7D%7D%5Clambda"/>其中<img src="http://latex.codecogs.com/gif.latex?%5Ceta"/>正比于<img src="http://latex.codecogs.com/gif.latex?%5Cfrac%7B1%7D%7B%5Csqrt%7Bt%7D%7D"/>，所以随着t增加，阈值会减小，是基于梯度下降有较高精度；
       - L1-RDA截断条件是常数，更容易产生稀疏，判定条件是平均累加梯度，可以避免训练不足导致截断问题，通过调节<img src="http://latex.codecogs.com/gif.latex?%5Clambda"/>一个参数，很容易在精度和稀疏性上权衡。但更新权重也是累积权重平均，相比于梯度下降精度会有所下降。
   - FTRL<br>
       *结合FOBOS和RDA两家之长*
@@ -415,7 +415,7 @@
   - TF-IDF：<img src="http://latex.codecogs.com/gif.latex?TF-IDF_%7Bt%2CD_i%7D%3DTF_%7Bt%2CD_i%7D%5Ctimes%20IDF_t"/>
 - 基于标签推荐系统：
   通过用户与商品对喜爱度推算出用户对标签的喜好程度，进而根据商品与标签关联度，为用户推荐商品
-  - 对应用户对标签对喜好程度计算公式：<br>
+  - 对应用户对标签的喜好程度计算公式：<br>
     <img src="http://latex.codecogs.com/gif.latex?rate%28u%2Ct%29%20%3D%20%5Cfrac%7B%5Csum_%7Bi%20%5Cin%20I_u%7Drate%28u%2Ci%29%20%5Ctimes%20rel%28i%2Ct%29%7D%7B%5Csum_%7Bi%20%5Cin%20I_u%7Drel%28i%2Ct%29%7D"/><br>
     <img src="http://latex.codecogs.com/gif.latex?rate%28u%2Ci%29"/>：用户u对艺术家i的评分<br>
     <img src="http://latex.codecogs.com/gif.latex?rel%28i%2Ct%29"/>：艺术家i与标签t的相关度
@@ -713,8 +713,8 @@ PV点击率：侧重页面对合适用户群黏性-->用户点击数
 </table>
 
   - ROC曲线：<br>
-  横坐标：错误样本中被预测为正确大概率<br>
-纵坐标：正确样本中被预测正确大概率<br>
+  横坐标：错误样本中被预测为正确的概率<br>
+纵坐标：正确样本中被预测正确的概率<br>
 根据阈值变化生成曲线
   - AUC：为ROC曲线下边面积，面积越大，效果越好
   - 准确率指标：
@@ -728,7 +728,7 @@ PV点击率：侧重页面对合适用户群黏性-->用户点击数
 越小说明系统趋向于把用户喜欢商品排在前面
 - 非准确率指标：
   1. 多样性：
-     - 用户间多样性：衡量不同用户推荐不同商品大能力<br>
+     - 用户间多样性：衡量不同用户推荐不同商品的能力<br>
     <img src="http://latex.codecogs.com/gif.latex?H_%7But%7D%3D1-%5Cfrac%7Bl_%7But%7D%7D%7BL%7D"/><br>
 <img src="http://latex.codecogs.com/gif.latex?l_%7But%7D"/>-->用户u和用户t推荐相同商品个数<br>
 L-->用户u或用户t推荐商品个数<br>
@@ -881,17 +881,18 @@ dropout导致两神经元不一定每次都在一个网络出现，使权重更�
     浅拷贝：在另一地址创建新的变量或容器，但容器内元素均是源对象元素地址的拷贝<br>
 深拷贝：容器内元素地址也是新开辟的 
 4. #### 内存管理
-   - 对象引用机制：<br>
+- 对象引用机制：<br>
     python内部使用引用计数，来保持追踪内存中的对象，所有对象都有引用计数
-   - 引用计数：<br>
-     - 引用计数增加：<br>
+- 引用计数：<br>
+  - 引用计数增加：<br>
      一个对象分配一个新的名称<br>
 将其放入容器中
-     - 引用计数减少<br>
+  - 引用计数减少<br>
      使用del语句对对象别名显示销毁<br>
 引用超出作用域或重新赋值
-  - 垃圾回收<br>
+- 垃圾回收<br>
   当一个对象引用计数归0，它将被垃圾收集机制处理掉<br>
+具有对象循环引用或全局命名空间引用的变量，在python退出往往不被释放
 具有对象循环引用或全局命名空间引用的变量，在python退出往往不被释放
 5. #### 闭包<br> 
     在一个内部函数中，对外部函数作用域变量进行引用
@@ -913,17 +914,17 @@ dropout导致两神经元不一定每次都在一个网络出现，使权重更�
     foo()
     ```
 7. #### 生成器迭代器
-   - 迭代器：不把所有元素装载到内存中，等到调用next才返回该元素
-   - 生成器：本质还是一个迭代器，yeild对应值被调用不会立刻返回，而是调用next方法时再返回
-   - 举例说明：range和items()返回都是列表，xrange(),iteritems()返回是迭代器
+- 迭代器：不把所有元素装载到内存中，等到调用next才返回该元素
+- 生成器：本质还是一个迭代器，yeild对应值被调用不会立刻返回，而是调用next方法时再返回
+- 举例说明：range和items()返回都是列表，xrange(),iteritems()返回是迭代器
   
 8. #### 匿名函数<br>
     无名，用完就完
 9. #### 回调函数通信<br>
     把函数指针作为参数传递给另一个函数，将整个函数当作一个对象赋值给调用函数
 10. #### python2,3区别：
-    - print在3中变为函数，2中是语句
-    - 编码不同，2是asscii，3是utf8
-    - xrange,range不同   
+- print在3中变为函数，2中是语句
+- 编码不同，2是asscii，3是utf8
+- xrange,range不同   
       
 

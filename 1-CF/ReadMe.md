@@ -38,7 +38,7 @@
   - 步骤：
     1. 计算物品之间相似度<img src="http://latex.codecogs.com/gif.latex?W_%7Bij%7D%3D%5Cfrac%7B%7CN%28i%29%20%5Ccap%20N%28j%29%7C%7D%7B%7CN%28i%29%7C%7D"/>其中<img src="http://latex.codecogs.com/gif.latex?%7CN%28i%29%7C">表示喜欢物品i对用户数
     2. 惩罚热门商品<img src="http://latex.codecogs.com/gif.latex?W_%7Bij%7D%3D%5Cfrac%7B%7CN%28i%29%20%5Ccap%20N%28j%29%7C%7D%7B%5Csqrt%7B%7CN%28i%29%7C%7CN%28j%29%7C%7D%7D"/>
-    3. 计算推荐结果<img src="http://latex.codecogs.com/gif.latex?p%28u%2Ci%29%3D%5Csum_%7Bv%20%5Cin%20S%28i%2Ck%29%20%5Ccap%20N%28u%29%7D%20W_%7Bij%7Dr_%7Bui%7D%24"/><br>
+    3. 计算推荐结果<img src="http://latex.codecogs.com/gif.latex?p%28u%2Ci%29%3D%5Csum_%7Bj%20%5Cin%20S%28i%2Ck%29%20%5Ccap%20N%28u%29%7D%20W_%7Bij%7Dr_%7Buj%7D"/><br>
     <img src="http://latex.codecogs.com/gif.latex?p%28u%2Ci%29"/>表示用户u对物品i对感兴趣程度;<br>
     <img src="http://latex.codecogs.com/gif.latex?S%28i%2Ck%29"/>表示和物品i最相似的k个物品;<br>
     <img src="http://latex.codecogs.com/gif.latex?W_%7Bij%7D"/>表示物品i和物品j相似度<br>
