@@ -287,6 +287,13 @@
       5. 限制分支特征个数
       6. 限制信息增益大小
       7. 权重限制
+    - 各种树的对比：
+        - ID3:使用信息增益<br>
+        特点：取值多大属性更容易使数据更纯，其信息增益大，容易的阿斗庞大且深度浅的树
+        - C4.5:使用信息增益率<br>
+        特点：相比于ID3抑制过细分类，抑制过拟合
+        - CART：使用Gini系数<br>
+        特点：对熵的近似，使数据由不确定性变成确定性能力更强
     - 物理意义：
       1. 学习采用自定而下递归方法
       2. 基本思想以信息熵为度量构造一棵下降最快的树，到叶子节点处熵值为0
@@ -763,7 +770,160 @@ Nc-->所有商品类别数
   设计推荐系统时，尽量使用代价最高用户行为<br>
 异常值处理
   8. 商业目标
+------------------------------------------
+### 梯度下降法
+- #### 动量梯度下降法（Momentum）
+  - 步骤：
+    - Require:学习率<img src="http://latex.codecogs.com/gif.latex?%5Cxi"/>,动量参数<img src="http://latex.codecogs.com/gif.latex?%5Calpha"/>
+    - Require:初始参数<img src="http://latex.codecogs.com/gif.latex?%5Ctheta"/>,初始速度v
+    - while 没有达到停止标准 do
+      - 从训练集采包含m个样本<img src="http://latex.codecogs.com/gif.latex?x%5E%7B%281%29%7D%2C...%2Cx%5E%7B%28m%29%7D%24"/>的小批量，对应目标为<img src="http://latex.codecogs.com/gif.latex?y%5E%7B%28i%29%7D"/>
+      - 计算梯度更新：<img src="http://latex.codecogs.com/gif.latex?g%5Cleftarrow%20%5Cfrac%7B1%7D%7Bm%7D%5Cnabla_%7B%5Ctheta%7D%5Csum_iL%28f%28x%5E%7B%28i%29%7D%3B%5Ctheta%29%2Cy%5E%7B%28i%29%7D%29"/>
+      - 计算速度更新：<img src="http://latex.codecogs.com/gif.latex?v%5Cleftarrow%20%5Calpha%20v%20-%20%5Cxi%20g"/>
+      - 应用更新：<img src="http://latex.codecogs.com/gif.latex?%5Ctheta%20%5Cleftarrow%20%5Ctheta%20&plus;%20v"/>
+    - end while
+  - 特点：
+    - 当梯度方向保持一致都是一个方向大时候，累加动量会越来越大起到加速收敛作用；
+    - 当梯度方向突然变化，累加梯度加上一个相反大值就变小了，会抑制变化，起到减小波动作用
 
-        
+- #### Adagrad
+  - 步骤：
+    - Require:全局学习率<img src="http://latex.codecogs.com/gif.latex?%5Cxi"/>
+    - Require:初始参数<img src="http://latex.codecogs.com/gif.latex?%5Ctheta"/>
+    - Require:小常数<img src="http://latex.codecogs.com/gif.latex?%5Csigma"/>，为了数值稳定大约设置为1e-7，初始化梯度累积变量r=0
+    - while 没有达到停止准则 do
+      - 从训练集采包含m个样本<img src="http://latex.codecogs.com/gif.latex?x%5E%7B%281%29%7D%2C...%2Cx%5E%7B%28m%29%7D%24"/>的小批量，对应目标为<img src="http://latex.codecogs.com/gif.latex?y%5E%7B%28i%29%7D"/>
+      - 计算梯度：<img src="http://latex.codecogs.com/gif.latex?g%5Cleftarrow%20%5Cfrac%7B1%7D%7Bm%7D%5Cnabla_%7B%5Ctheta%7D%5Csum_iL%28f%28x%5E%7B%28i%29%7D%3B%5Ctheta%29%2Cy%5E%7B%28i%29%7D%29"/>
+      - 累积平方梯度：<img src="http://latex.codecogs.com/gif.latex?r%20%5Cleftarrow%20r&plus;g%5Cbullet%20g"/>
+      - 计算更新：<img src="http://latex.codecogs.com/gif.latex?%5CDelta%20%5Ctheta%20%5Cleftarrow%20-%5Cfrac%7B%5Cxi%7D%7B%5Csigma%20&plus;%5Csqrt%7Br%7D%7D%5Cbullet%20g"/>
+      - 应用更新：<img src="http://latex.codecogs.com/gif.latex?%5Ctheta%20%5Cleftarrow%20%5Ctheta%20&plus;%20%5CDelta%20%5Ctheta"/>
+    - end while 
+  - 特点：不同参数适应不同学习率
+    - 训练前期，梯度较小，分母小-->学习率大(激励阶段)
+    - 训练后期，梯度较大，累加分母变大-->学习率小（惩罚阶段）
+    - 缺点：学习率可能过早趋于零
+    
+- #### RMSProp
+  - 步骤：
+    - Require:全局学习率<img src="http://latex.codecogs.com/gif.latex?%5Cxi"/>，衰减速率<img src="http://latex.codecogs.com/gif.latex?%5Crho"/>
+    - Require:初始参数<img src="http://latex.codecogs.com/gif.latex?%5Ctheta"/>
+    - Require:小常数<img src="http://latex.codecogs.com/gif.latex?%5Csigma"/>，为了数值稳定大约设置为1e-6，初始化梯度累积变量r=0
+    - while 没有达到停止准则 do
+      - 从训练集采包含m个样本<img src="http://latex.codecogs.com/gif.latex?x%5E%7B%281%29%7D%2C...%2Cx%5E%7B%28m%29%7D%24"/>的小批量，对应目标为<img src="http://latex.codecogs.com/gif.latex?y%5E%7B%28i%29%7D"/>
+      - 计算梯度：<img src="http://latex.codecogs.com/gif.latex?g%5Cleftarrow%20%5Cfrac%7B1%7D%7Bm%7D%5Cnabla_%7B%5Ctheta%7D%5Csum_iL%28f%28x%5E%7B%28i%29%7D%3B%5Ctheta%29%2Cy%5E%7B%28i%29%7D%29"/>
+      - 累积平方梯度：<img src="http://latex.codecogs.com/gif.latex?r%20%5Cleftarrow%20%5Crho%20r&plus;%281-%5Crho%29g%5Cbullet%20g"/>
+      - 计算更新：<img src="http://latex.codecogs.com/gif.latex?%5CDelta%20%5Ctheta%20%5Cleftarrow%20-%5Cfrac%7B%5Cxi%7D%7B%5Csigma%20&plus;%5Csqrt%7Br%7D%7D%5Cbullet%20g"/>
+      - 应用更新：<img src="http://latex.codecogs.com/gif.latex?%5Ctheta%20%5Cleftarrow%20%5Ctheta%20&plus;%20%5CDelta%20%5Ctheta"/>
+    - end while 
+  - 特点：与Adagrad相比累加平方梯度用了指数衰减平均，可丢弃遥远历史，使其找到凸碗结构加快收敛
+  
+- #### Adam
+  - 步骤：
+    - Require:步长<img src="http://latex.codecogs.com/gif.latex?%5Cxi"/>(建议默认0.001)
+    - Require:矩估计指数衰减速率，<img src="http://latex.codecogs.com/gif.latex?%5Crho_1%20%5C%20%5C%20%5Crho_2"/>，在区间[0,1)内，建议默认（0.9和0.999）
+    - Require:小常数<img src="http://latex.codecogs.com/gif.latex?%5Csigma"/>，为了数值稳定大约设置为1e-8
+    - Require:初始参数<img src="http://latex.codecogs.com/gif.latex?%5Ctheta"/><br>
+    初始化一阶和二阶矩变量s=0,r=0<br>
+初始化时间步t=0
+    - while 没有达到停止准则 do
+      - 从训练集采包含m个样本<img src="http://latex.codecogs.com/gif.latex?x%5E%7B%281%29%7D%2C...%2Cx%5E%7B%28m%29%7D%24"/>的小批量，对应目标为<img src="http://latex.codecogs.com/gif.latex?y%5E%7B%28i%29%7D"/>
+      - 计算梯度：<img src="http://latex.codecogs.com/gif.latex?g%5Cleftarrow%20%5Cfrac%7B1%7D%7Bm%7D%5Cnabla_%7B%5Ctheta%7D%5Csum_iL%28f%28x%5E%7B%28i%29%7D%3B%5Ctheta%29%2Cy%5E%7B%28i%29%7D%29"/>
+      - <img src="http://latex.codecogs.com/gif.latex?t%20%5Cleftarrow%20t&plus;1"/>
+      - 更新一阶矩：<img src="http://latex.codecogs.com/gif.latex?s%5Cleftarrow%20%5Crho_1%20s&plus;%281-%5Crho_1%29g"/>
+      - 更新二阶矩：<img src="http://latex.codecogs.com/gif.latex?r%20%5Cleftarrow%20%5Crho_2%20r&plus;%281-%5Crho_2%29g%5Cbullet%20g"/>
+      - 修正一阶矩的偏差：<img src="http://latex.codecogs.com/gif.latex?%5Chat%20s%20%5Cleftarrow%20%5Cfrac%7Bs%7D%7B1-%5Crho_1%5Et%7D"/>
+      - 修正二阶矩的偏差：<img src="http://latex.codecogs.com/gif.latex?%5Chat%20r%20%5Cleftarrow%20%5Cfrac%7Br%7D%7B1-%5Crho_2%5Et%7D"/>
+      - 计算更新：<img src="http://latex.codecogs.com/gif.latex?%5CDelta%20%5Ctheta%20%5Cleftarrow%20-%5Cxi%20%5Cfrac%7B%5Chat%20s%7D%7B%5Csqrt%7B%5Chat%20r%7D&plus;%5Csigma%7D"/>
+      - 应用更新：<img src="http://latex.codecogs.com/gif.latex?%5Ctheta%20%5Cleftarrow%20%5Ctheta%20&plus;%20%5CDelta%20%5Ctheta"/>
+    - end while 
+  - 特点：修正后大Momentum+RMSProp；对超参数选择鲁棒
+  
+- #### 牛顿法
+  - 公式：<img src="http://latex.codecogs.com/gif.latex?%5Cphi%28x%29%3Df%28x_k%29&plus;f%27%28x_k%29%28x-x_k%29&plus;%5Cfrac%7B1%7D%7B2%7Df%27%27%28x_k%29%28x-x_k%29%5E2"/><br>
+  <img src="http://latex.codecogs.com/gif.latex?%5Cphi%27%28x%29%3D0%20%5Crightarrow%20%5C%20%5C%20f%27%28x_k%29&plus;f%27%27%28x_k%29%28x-x_k%29%3D0%20%5Crightarrow%20%5C%20%5C%20x%3Dx_-%5Cfrac%7Bf%27%28x_k%29%7D%7Bf%27%27%28x_k%29%7D"/>
+  - 特点：二阶收敛，不仅考虑梯度是否够大，还会考虑走一步之后坡度是否更大；需计算Hessian矩阵，维度较高比较困难
+ 
+### Normalize
+<div aligned=center><img src="https://pic2.zhimg.com/v2-c381d0440884e39826a835af06a36f69_1200x500.jpg"/></div>
+
+- ICS(internal Corariate Shift)问题：<br>
+  - 问题描述：神经网络层层叠加，高层输入分布变化剧烈，使得高层需不断重新适应底层参数更新
+  - 导致后果：
+    1. 上层参数需不断适应新的输入数据分布，降低学习速度
+    2. 下层输入变化可能趋于变大或变小，导致上层落入饱和区，使学习过早停止
+    3. 每层更新都会影响到其他层，每层参数更新策略尽可能谨慎
+- 解决方案：<br>
+输入维度为[N,C,H,W]
+  - BN:在bacth上对N,H,W归一化，保留通道C的维度<br>
+  特点：对小bacth效果差
+  - LN:在通道方向上对C,H,W归一化<br>
+  特点：
+    1. 同层神经元输入拥有相同均值和方差，不同输入样本有不同均值方差；
+    2. 不需批训练，单条数据内部能归一化；
+    3. 可用深度不固定网络，多用于RNN中
+  - IN:在图像像素上对H,W归一化<br>
+  特点：适用于风格化
+  - GN:把channel分组再归一化<br>
+  特点：LN+IN的折中，适用于占显存较大任务
+### Dropout
+特点：
+  - 取平均值作用：<br>
+  随机删掉隐藏层神经元导致网络结构不同，相当于对很多神经元取平均，不同网络产生不同过拟合，可整体减少
+  - 减少神经元之间复杂共适应关系<br>
+dropout导致两神经元不一定每次都在一个网络出现，使权重更新不再依赖固定关系大隐含节点共同作用，阻止某些特征仅仅在其特定特征下才有效果大状况，迫使网络更鲁棒。
+### python面试题
+1. #### fun(*arg,**kwargs)<br>
+   *args:把参数格式化存储在一个元组中，长度没有限制，必须位于普通参数和默认参数之后<br>
+**kwargs:参数格式化存储在一个字典中，必须位于参数列表最后面
+2. #### 元组和列表<br>
+    元组不可变，列表可变，元组可被哈希
+3. #### 深浅拷贝<br>
+    浅拷贝：在另一地址创建新的变量或容器，但容器内元素均是源对象元素地址的拷贝<br>
+深拷贝：容器内元素地址也是新开辟的 
+4. #### 内存管理
+   - 对象引用机制：<br>
+    python内部使用引用计数，来保持追踪内存中的对象，所有对象都有引用计数
+   - 引用计数：<br>
+     - 引用计数增加：<br>
+     一个对象分配一个新的名称<br>
+将其放入容器中
+     - 引用计数减少<br>
+     使用del语句对对象别名显示销毁<br>
+引用超出作用域或重新赋值
+  - 垃圾回收<br>
+  当一个对象引用计数归0，它将被垃圾收集机制处理掉<br>
+具有对象循环引用或全局命名空间引用的变量，在python退出往往不被释放
+5. #### 闭包<br> 
+    在一个内部函数中，对外部函数作用域变量进行引用
+6. #### 函数装饰器<br>
+    可以让其他函数在不需要做任何代码改动前提下，增加额外功能，装饰器返回值也是一个函数对象，常用于插入日志，事务处理。
+    ```python
+    '''
+    举例说明
+    '''
+    import logging
+    def use_logging(func):
+        def wrapper():
+            logging.warn('%s is running'%fun.__name__)
+            return func()
+        return wrapper
+    @use_logging  #语法糖
+    def fun()
+        print('I am foo')
+    foo()
+    ```
+7. #### 生成器迭代器
+   - 迭代器：不把所有元素装载到内存中，等到调用next才返回该元素
+   - 生成器：本质还是一个迭代器，yeild对应值被调用不会立刻返回，而是调用next方法时再返回
+   - 举例说明：range和items()返回都是列表，xrange(),iteritems()返回是迭代器
+  
+8. #### 匿名函数<br>
+    无名，用完就完
+9. #### 回调函数通信<br>
+    把函数指针作为参数传递给另一个函数，将整个函数当作一个对象赋值给调用函数
+10. #### python2,3区别：
+    - print在3中变为函数，2中是语句
+    - 编码不同，2是asscii，3是utf8
+    - xrange,range不同   
       
 
